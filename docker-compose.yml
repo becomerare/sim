@@ -1,0 +1,32 @@
+services:
+  ganache_cli:
+    image: trufflesuite/ganache:v7.0.0-beta.0
+    # image: trufflesuite/ganache-cli
+    container_name: ganache_cli_container
+    # command: --secure --unlock "0xd938ffd144253d61ae7f26194e84fe9929de7b4b"
+    env_file:
+      - ./.env
+    command: --fork https://speedy-nodes-nyc.moralis.io/${MORALIS_KEY}/eth/mainnet/archive@${BLOCK} --unlock "0xd938ffd144253d61ae7f26194e84fe9929de7b4b"
+    networks:
+      - network
+    ports:
+      - "8545:8545"
+    # healthcheck:
+    #   test: ["CMD", "nc", "-z", "ganache_cli", "8545"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 5
+    #   start_period: 300S
+  truffle:
+    build: truffle/.
+    container_name: truffle_container
+    # depends_on:
+      # ganache_cli:
+        # condition: service_healthy
+      # links:
+        # - ganache_cli
+    networks:
+      - network
+networks:
+  network:
+    driver: bridge
